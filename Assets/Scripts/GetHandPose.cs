@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Hands;
 
-public class WristTracking : MonoBehaviour
+public class GetHandPose : MonoBehaviour
 {
     XRHandSubsystem m_HandSubsystem;
 
@@ -38,13 +38,7 @@ public class WristTracking : MonoBehaviour
         
         var trackingData = subsystem.rightHand.GetJoint(XRHandJointIDUtility.FromIndex(XRHandJointID.Wrist.ToIndex()));
 
-        //Debug.Log(trackingData);
-
-        if (trackingData.TryGetPose(out Pose pose))
-        {
-            gameObject.transform.localPosition = pose.position;
-            gameObject.transform.localRotation = pose.rotation;
-        }
+        Debug.Log(trackingData);
 
     }
 }
