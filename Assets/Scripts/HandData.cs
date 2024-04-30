@@ -4,15 +4,9 @@ using UnityEngine;
 
 public class HandData : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public enum HandModelType{Left,Right}
+    public HandModelType handType;
+    public Transform root;
+    public Transform[] fingerBones;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
