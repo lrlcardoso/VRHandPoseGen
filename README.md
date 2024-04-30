@@ -1,1 +1,2 @@
 # VRHandPoseGen
+VRHandPoseGen is a Unity application designed to assist in creating various models of custom hand poses. This application tracks the user's hand movements and, upon pressing the spacebar, records the angle of each joint. With these values, creating animations for specific hand poses becomes significantly easier. In the future, the application will have the capability to save animations.
