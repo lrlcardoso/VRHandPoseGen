@@ -1,44 +1,66 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR.Hands;
+using System.Text;
+using System.IO;
+
 
 public class GetHandPose : MonoBehaviour
 {
-    XRHandSubsystem m_HandSubsystem;
 
+    public Transform[] fingerBones;
+    private Transform[] savedFingerBones;
+    private bool showFlag = false;
+    private StreamWriter file;
+    public string folderPath;
+    public string fileName;
+    private string dataFile;
+
+    void Start()
+    {
+        dataFile = folderPath + fileName + ".csv";
+        file = new StreamWriter(new FileStream(dataFile, FileMode.Create), Encoding.UTF8);
+        // Write the header line to the position data file
+        file.WriteLine("Joint,PosX,PosY,PosZ,RotX,RotY,RotZ");
+    }
 
     void Update()
     {
-        if (m_HandSubsystem != null && m_HandSubsystem.running)
-            return;
 
-        
-        var handSubsystems = new List<XRHandSubsystem>();
-        SubsystemManager.GetSubsystems(handSubsystems);
+        CheckKeyKeyboard();
 
-        for (var i = 0; i < handSubsystems.Count; ++i)
-        {
-            var handSubsystem = handSubsystems[i];
+        if (showFlag){
+            
+            savedFingerBones = fingerBones;
 
-            if (handSubsystem.running)
-            {
-                m_HandSubsystem = handSubsystem;
-                break;
+            for (int i=0; i < savedFingerBones.Length; i++){
+                string dataLine = string.Format(
+                "{0},{1},{2},{3},{4},{5},{6}",
+                savedFingerBones[i].gameObject.name,
+                savedFingerBones[i].localPosition.x, savedFingerBones[i].localPosition.y, savedFingerBones[i].localPosition.z,
+                savedFingerBones[i].localEulerAngles.x, savedFingerBones[i].localEulerAngles.x, savedFingerBones[i].localEulerAngles.x
+                );
+                file.WriteLine(dataLine);
             }
+            
+            
+            Debug.Log("File " + dataFile + " successfully saved.");
+            showFlag=false;
         }
 
-        if (m_HandSubsystem != null)
-            m_HandSubsystem.updatedHands += OnUpdatedHands;
     }
-
-    void OnUpdatedHands(XRHandSubsystem subsystem,
-        XRHandSubsystem.UpdateSuccessFlags updateSuccessFlags,
-        XRHandSubsystem.UpdateType updateType)
+    
+    void OnApplicationQuit()
     {
-        
-        var trackingData = subsystem.rightHand.GetJoint(XRHandJointIDUtility.FromIndex(XRHandJointID.Wrist.ToIndex()));
-
-        Debug.Log(trackingData);
-
+        file.Flush();
+        file.Close();
     }
+
+    private void CheckKeyKeyboard()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            showFlag = true;
+        }
+    }
+
 }
