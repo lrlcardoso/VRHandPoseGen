@@ -8,6 +8,7 @@ public class GetHandPose : MonoBehaviour
 {
 
     public Transform[] fingerBones;
+    public Transform[] mirror;
     private Transform[] savedFingerBones;
     private bool showFlag = false;
     private StreamWriter file;
@@ -17,10 +18,12 @@ public class GetHandPose : MonoBehaviour
 
     void Start()
     {
+        /*
         dataFile = folderPath + fileName + ".csv";
         file = new StreamWriter(new FileStream(dataFile, FileMode.Create), Encoding.UTF8);
         // Write the header line to the position data file
         file.WriteLine("Joint,PosX,PosY,PosZ,RotX,RotY,RotZ");
+        */
     }
 
     void Update()
@@ -33,6 +36,11 @@ public class GetHandPose : MonoBehaviour
             savedFingerBones = fingerBones;
 
             for (int i=0; i < savedFingerBones.Length; i++){
+                mirror[i].localPosition = savedFingerBones[i].localPosition;
+                mirror[i].localEulerAngles = savedFingerBones[i].localEulerAngles;
+            }
+            /*
+            for (int i=0; i < savedFingerBones.Length; i++){
                 string dataLine = string.Format(
                 "{0},{1},{2},{3},{4},{5},{6}",
                 savedFingerBones[i].gameObject.name,
@@ -41,9 +49,9 @@ public class GetHandPose : MonoBehaviour
                 );
                 file.WriteLine(dataLine);
             }
-            
-            
             Debug.Log("File " + dataFile + " successfully saved.");
+            */
+            
             showFlag=false;
         }
 
@@ -51,8 +59,10 @@ public class GetHandPose : MonoBehaviour
     
     void OnApplicationQuit()
     {
+        /*
         file.Flush();
         file.Close();
+        */
     }
 
     private void CheckKeyKeyboard()
