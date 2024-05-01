@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Text;
 using System.IO;
+using UnityEditor;
 
 
 public class GetHandPose : MonoBehaviour
@@ -9,6 +10,7 @@ public class GetHandPose : MonoBehaviour
 
     public Transform[] fingerBones;
     public Transform[] mirror;
+    public GameObject prefab2Edit;
     private Transform[] savedFingerBones;
     private bool showFlag = false;
     private StreamWriter file;
@@ -39,6 +41,8 @@ public class GetHandPose : MonoBehaviour
                 mirror[i].localPosition = savedFingerBones[i].localPosition;
                 mirror[i].localEulerAngles = savedFingerBones[i].localEulerAngles;
             }
+
+            savePrefab();
             /*
             for (int i=0; i < savedFingerBones.Length; i++){
                 string dataLine = string.Format(
@@ -55,6 +59,28 @@ public class GetHandPose : MonoBehaviour
             showFlag=false;
         }
 
+    }
+
+    private void savePrefab()
+    {
+
+            // Create folder Prefabs and set the path as within the Prefabs folder,
+            // and name it as the GameObject's name with the .Prefab format
+            if (!Directory.Exists("Assets/Prefabs"))
+                AssetDatabase.CreateFolder("Assets", "Prefabs");
+            string localPath = "Assets/Prefabs/" + prefab2Edit.name + ".prefab";
+
+            // Make sure the file name is unique, in case an existing Prefab has the same name.
+            localPath = AssetDatabase.GenerateUniqueAssetPath(localPath);
+
+            // Create the new Prefab and log whether Prefab was saved successfully.
+            bool prefabSuccess;
+            PrefabUtility.SaveAsPrefabAsset(prefab2Edit, localPath, out prefabSuccess);
+            if (prefabSuccess == true)
+                Debug.Log("Prefab was saved successfully");
+            else
+                Debug.Log("Prefab failed to save" + prefabSuccess);
+        
     }
     
     void OnApplicationQuit()
